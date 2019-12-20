@@ -17,8 +17,14 @@ function select_listed_mac
 
     printf '\nSelect A MAC from this list : '
     read mac_index
-    mac_index=$(($mac_index - 1))
 
+    # validate input value 0 < mac index < count
+    if [ $mac_index -le 0 ] || [ $mac_index -gt $count ]; then
+        echo 'ERROR : Wrong Index Selected'
+        exit
+    fi
+
+    mac_index=$(($mac_index - 1))
     change_mac ${mac_array[$mac_index]}
 }
 
@@ -44,7 +50,7 @@ function select_random_mac
 
 function reset_default_mac
 {
-    echo '\n*** Restting MAC ***\n'
+    printf '\n*** Restting MAC ***\n'
     ip link set $if_name down
     macchanger -p $if_name
     ip link set $if_name up
@@ -80,12 +86,11 @@ fi
 
 # While Menu
 while true; do
-    printf "\n===[ MAC Selector ]===\n"
+    printf "\n[ MAC Selector ]\n"
     printf '\n1) Select MAC from List'
     printf '\n2) Set Random MAC From List'
     printf '\n3) Reset Default MAC'
-    printf '\nChoose Other Option To Exit'
-    printf '\n\nChoose Option : '
+    printf '\n\nChoose Other Option To Exit [ Select Option ] : '
     read option
 
     if [ "$option" = "1" ]; then
@@ -98,6 +103,7 @@ while true; do
         reset_default_mac
         exit
     else
+        echo 'Exiting...'
         exit
     fi
 done
